@@ -44,10 +44,14 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.login_crud"
-        minSdkVersion flutter.minSdkVersion
+//        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 19
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        //  Manifest에 빌드변수 삽입
+        manifestPlaceholders["myKakaoApiKey"] = localProperties.getProperty('KAKAO_AUTH_SCHEME')
     }
 
     buildTypes {
