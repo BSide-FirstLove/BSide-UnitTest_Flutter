@@ -13,6 +13,7 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   bool isRight = false;
+  bool isEdit = false;
 
   @override
   initState() {
@@ -23,9 +24,22 @@ class _DetailScreenState extends State<DetailScreen> {
   List<Widget> _actionsItem() {
     List<Widget> results = [];
     if (isRight) {
-      results.add(IconButton(onPressed: () {}, icon: Icon(Icons.edit)));
-      results.add(IconButton(
-          onPressed: () {}, icon: Icon(Icons.delete_forever_rounded)));
+      results.add(
+          IconButton(
+            onPressed: () {
+              setState(() {
+                isEdit = true;
+              });
+            },
+            icon: Icon(Icons.edit)
+        )
+      );
+      results.add(
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.delete_forever_rounded)
+          )
+      );
     }
     return results;
   }
@@ -57,7 +71,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 Container(
                   padding: EdgeInsets.all(10),
                   child: Text(
-                    "글쓴이 : " + widget.post.title,
+                    "글쓴이 : " + widget.post.user.nickname,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -78,24 +92,42 @@ class _DetailScreenState extends State<DetailScreen> {
                     padding: EdgeInsets.all(10),
                     child: TextField(
                       maxLines: 5,
-                      enabled: false,
+                      enabled: isEdit,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                       ),
                     )),
-                isRight
+                isEdit
                     ? Container(
                         padding: EdgeInsets.all(10),
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                              backgroundColor: Colors.white30),
-                          onPressed: () {},
-                          child: Text(
-                            "작성 완료",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                  backgroundColor: Colors.white30),
+                              onPressed: () {
+                                setState(() {
+                                  isEdit = false;
+                                });
+                              },
+                              child: Text(
+                                "수정 취소",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            Padding(padding: EdgeInsets.only(right: 20)),
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                  backgroundColor: Colors.white30),
+                              onPressed: () {},
+                              child: Text(
+                                "수정 완료",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        )
                       )
                     : Container()
               ],

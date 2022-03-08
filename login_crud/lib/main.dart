@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:login_crud/model/state.dart';
@@ -11,6 +12,9 @@ import 'package:provider/provider.dart';
 void main() async {
   await dotenv.load(fileName: '.env');
   KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_NATIVE_APP_KEY'));
+  //  Firebase init
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
       ChangeNotifierProvider(
         create: (context) => UserState(),
