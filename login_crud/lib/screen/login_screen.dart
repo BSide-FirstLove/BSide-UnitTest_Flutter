@@ -83,11 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
       User kakaoUser = await UserApi.instance.me();
       // context.watch<UserState>().add(
       Provider.of<UserState>(context, listen: false).add(
-          my_user.User.fromMap({
-            'id' : kakaoUser.id,
-            'nickname' : kakaoUser.kakaoAccount?.profile?.nickname,
-            'image' : kakaoUser.kakaoAccount?.profile?.thumbnailImageUrl
-          })
+          my_user.User.fromKakao(kakaoUser)
       );
       print('사용자 정보 요청 성공'
           '\n회원번호: ${kakaoUser.id}'

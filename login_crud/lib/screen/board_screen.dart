@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:login_crud/model/post.dart';
-import 'package:login_crud/model/user.dart';
 import 'package:login_crud/screen/write_screen.dart';
 import 'package:login_crud/widget/box_post.dart';
 
@@ -13,12 +12,10 @@ class BoardScreen extends StatefulWidget {
 }
 
 class _BoardScreenState extends State<BoardScreen> {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  // late Stream<QuerySnapshot> streamData = firestore.collection('movie').snapshots();
-
+  final Stream<QuerySnapshot> _postStream = FirebaseFirestore.instance.collection('post').snapshots();
   Widget _fetchData(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: firestore.collection('post').snapshots(),
+      stream: _postStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong');
