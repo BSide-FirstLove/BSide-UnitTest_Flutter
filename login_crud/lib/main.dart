@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:login_crud/screen/board_screen.dart';
 import 'package:login_crud/screen/login_screen.dart';
+import 'package:login_crud/screen/map_screen.dart';
 import 'package:login_crud/widget/bottom_bar.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -39,21 +41,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return const DefaultTabController(
       length: 2,
       child: Scaffold(
         body: TabBarView(
           // physics: NeverScrollableScrollPhysics(), //  페이지 스크롤 여부
           children: <Widget>[
-            Container(
-              child: Center(child: Text("1"),),
-            ),
-            Container(
-              child: Center(child: Text("2"),),
-            ),
+            BoardScreen(),
+            MapScreen(),
           ],
         ),
-        bottomNavigationBar: const Bottom(),
+        bottomNavigationBar: Bottom(),
       ),
     );
   }

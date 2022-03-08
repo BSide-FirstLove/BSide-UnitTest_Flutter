@@ -13,6 +13,21 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool isLogin = false;
 
+  _checkToken() async {
+    try{
+      await UserApi.instance.accessTokenInfo();
+      setState(() {
+        isLogin = true;
+      });
+    } catch (error) {
+      if (error is KakaoException && error.isInvalidTokenError()) {
+        print('토큰 만료 $error');
+      } else {
+        print('토큰 정보 조회 실패 $error');
+      }
+    }
+  }
+
   _kakaoLogin() async {
     // 카카오톡 설치 여부 확인
     if (await isKakaoTalkInstalled()) {
