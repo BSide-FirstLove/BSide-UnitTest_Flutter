@@ -43,6 +43,7 @@ class _BoardScreenState extends State<BoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
+        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Stack(
       children: [
         BoxPost(posts: posts),
@@ -60,7 +61,7 @@ class _BoardScreenState extends State<BoardScreen> {
                       return WriteScreen();
                     }));
               },
-              child: Icon(Icons.add_comment),
+              child: Icon(Icons.add_box, color: Colors.white),
               backgroundColor: Colors.redAccent,
             ),
           ),

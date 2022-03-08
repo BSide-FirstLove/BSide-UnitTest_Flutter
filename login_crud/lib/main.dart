@@ -41,9 +41,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DefaultTabController(
+    return DefaultTabController(
       length: 2,
       child: Scaffold(
+        appBar: AppBar(title: Text('Login_CRUD')),
         body: TabBarView(
           // physics: NeverScrollableScrollPhysics(), //  페이지 스크롤 여부
           children: <Widget>[

@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, //세로 가운데 정렬
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               child: const CircleAvatar(

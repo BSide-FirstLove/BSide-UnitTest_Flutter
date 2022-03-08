@@ -16,7 +16,7 @@ class Bottom extends StatelessWidget {
           tabs: <Widget>[
             Tab(
               icon: Icon(
-                Icons.departure_board,
+                Icons.description,
                 size: 20,
               ),
               child: Text(

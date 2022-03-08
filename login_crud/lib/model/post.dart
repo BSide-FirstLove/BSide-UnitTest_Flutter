@@ -12,4 +12,7 @@ class Post {
         title = map['title'],
         content = map['content'],
         dateCreated = map['dateCreated'];
+  String getDateCreated() {
+    return "${dateCreated.month} 월 ${dateCreated.day} 일";
+  }
 }
