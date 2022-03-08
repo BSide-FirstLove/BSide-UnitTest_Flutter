@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:login_crud/model/state.dart';
 import 'package:login_crud/screen/board_screen.dart';
 import 'package:login_crud/screen/login_screen.dart';
 import 'package:login_crud/screen/map_screen.dart';
 import 'package:login_crud/widget/bottom_bar.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   await dotenv.load(fileName: '.env');
   KakaoSdk.init(nativeAppKey: dotenv.get('KAKAO_NATIVE_APP_KEY'));
-  runApp(const MyApp());
+  runApp(
+      ChangeNotifierProvider(
+        create: (context) => UserState(),
+        child: const MyApp(),
+      )
+  );
 }
 
 class MyApp extends StatefulWidget {

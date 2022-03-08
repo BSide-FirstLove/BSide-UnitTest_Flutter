@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:login_crud/main.dart';
+import 'package:login_crud/model/state.dart';
+import 'package:login_crud/model/user.dart' as my_user;
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -77,11 +80,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _getUser() async {
     try {
-      User user = await UserApi.instance.me();
+      User kakaoUser = await UserApi.instance.me();
+      // context.watch<UserState>().add(
+      Provider.of<UserState>(context, listen: false).add(
+          my_user.User.fromMap({
+            'id' : kakaoUser.id,
+            'nickname' : kakaoUser.kakaoAccount?.profile?.nickname,
+            'image' : kakaoUser.kakaoAccount?.profile?.thumbnailImageUrl
+          })
+      );
       print('사용자 정보 요청 성공'
-          '\n회원번호: ${user.id}'
-          '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
-          '\n이메일: ${user.kakaoAccount?.email}');
+          '\n회원번호: ${kakaoUser.id}'
+          '\n이미지: ${kakaoUser.kakaoAccount?.profile?.profileImageUrl}'
+          '\n이미지썸넬: ${kakaoUser.kakaoAccount?.profile?.thumbnailImageUrl}'
+          '\n닉네임: ${kakaoUser.kakaoAccount?.profile?.nickname}');
     } catch (error) {
       print('사용자 정보 요청 실패 $error');
     }

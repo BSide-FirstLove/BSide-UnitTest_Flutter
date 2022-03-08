@@ -1,10 +1,11 @@
 class User {
   final int id;
-  final String name;
+  final String nickname;
   final String image;
 
   User.fromMap(Map<String, dynamic> map)
       : id = map['id'],
-        name = map['name'],
+        nickname = map['nickname'],
         image = map['image'];
+
 }

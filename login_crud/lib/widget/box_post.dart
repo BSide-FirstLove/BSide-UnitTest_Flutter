@@ -47,7 +47,7 @@ List<Widget> _makeBoardItem(BuildContext context, List<Post> posts) {
                 child: Column(
                   children: [
                     Text(posts[i].getDateCreated()),
-                    Text(posts[i].userID)
+                    Text(posts[i].user.nickname)
                   ],
                 ),
               ),

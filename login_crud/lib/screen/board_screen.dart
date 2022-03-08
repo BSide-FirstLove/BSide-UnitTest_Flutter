@@ -12,36 +12,53 @@ class BoardScreen extends StatefulWidget {
 }
 
 class _BoardScreenState extends State<BoardScreen> {
-  User user = User.fromMap({'id': 123124, 'name': '한재현', 'image': 'imageurl'});
   List<Post> posts = [
     Post.fromMap({
-      'userID': "141414",
+      'user': User.fromMap({
+        'id': 2150582550,
+        "nickname": '메돌이1',
+        'image': 'https://post-phinf.pstatic.net/MjAyMDA2MDRfMjcz/MDAxNTkxMjMyNDIwODAy.Zb1gf9wnPBXyh2iwqt6WbG9NVlwKAbA0aZb3VCtLS28g.PZ22F-FY0uq_7snQ3i_VNcmBLDWkZA4Vv1wE_MsxBBcg.JPEG/fsdfsdf.JPG.jpg?type=w1200'
+      }),
       'title': "테스트 제목1",
       'content': "테스트 내용1",
       'dateCreated': DateTime.now()
     }),
     Post.fromMap({
-      'userID': "141414",
+      'user': User.fromMap({
+        'id': 2,
+        "nickname": '메돌이2',
+        'image': 'https://post-phinf.pstatic.net/MjAyMDA2MDRfMjcz/MDAxNTkxMjMyNDIwODAy.Zb1gf9wnPBXyh2iwqt6WbG9NVlwKAbA0aZb3VCtLS28g.PZ22F-FY0uq_7snQ3i_VNcmBLDWkZA4Vv1wE_MsxBBcg.JPEG/fsdfsdf.JPG.jpg?type=w1200'
+      }),
       'title': "테스트 제목2",
       'content': "테스트 내용2",
       'dateCreated': DateTime.now()
     }),
     Post.fromMap({
-      'userID': "141414",
+      'user': User.fromMap({
+        'id': 3,
+        "nickname": '메돌이3',
+        'image': 'https://post-phinf.pstatic.net/MjAyMDA2MDRfMjcz/MDAxNTkxMjMyNDIwODAy.Zb1gf9wnPBXyh2iwqt6WbG9NVlwKAbA0aZb3VCtLS28g.PZ22F-FY0uq_7snQ3i_VNcmBLDWkZA4Vv1wE_MsxBBcg.JPEG/fsdfsdf.JPG.jpg?type=w1200'
+      }),
       'title': "테스트 제목3",
       'content': "테스트 내용3",
       'dateCreated': DateTime.now()
     }),
     Post.fromMap({
-      'userID': "141414",
+      'user': User.fromMap({
+        'id': 4,
+        "nickname": '메돌이4',
+        'image': 'https://post-phinf.pstatic.net/MjAyMDA2MDRfMjcz/MDAxNTkxMjMyNDIwODAy.Zb1gf9wnPBXyh2iwqt6WbG9NVlwKAbA0aZb3VCtLS28g.PZ22F-FY0uq_7snQ3i_VNcmBLDWkZA4Vv1wE_MsxBBcg.JPEG/fsdfsdf.JPG.jpg?type=w1200'
+      }),
       'title': "테스트 제목4",
-      'content': "테스트 내용",
+      'content': "테스트 내용4",
       'dateCreated': DateTime.now()
     })
   ];
 
   @override
   Widget build(BuildContext context) {
+    // User user1 = context.read<UserState>().user;
+    // User user2 = Provider.of<UserState>(context).user;
     return Container(
         padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Stack(
