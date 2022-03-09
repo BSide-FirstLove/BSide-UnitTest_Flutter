@@ -3,8 +3,8 @@ import 'package:login_crud/model/user.dart';
 
 class Post {
   final User user;
-  final String title;
-  final String content;
+  String title;
+  String content;
   final Timestamp dateCreated;
   final DocumentReference reference;
 

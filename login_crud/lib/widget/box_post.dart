@@ -35,7 +35,7 @@ List<Widget> _makeBoardItem(BuildContext context, List<Post> posts) {
             children: [
               CircleAvatar(
                 radius: 30,
-                backgroundImage: AssetImage('images/baby2.jpg'),
+                backgroundImage: Image.network(posts[i].user.image).image,
               ),
               Container(
                 width: 265,

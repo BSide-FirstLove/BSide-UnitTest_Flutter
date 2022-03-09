@@ -8,16 +8,18 @@ class WriteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference posts = FirebaseFirestore.instance.collection('post');
-    Future<void> addUser() {
+    final titleInputController = TextEditingController();
+    final contentInputController = TextEditingController();
+    final CollectionReference posts = FirebaseFirestore.instance.collection('post');
+    Future<void> addPost() {
       return posts
           .add({
             'user': context.read<UserState>().user.single.toMap(),
-            'title': "글쓰기테스트 제목11",
-            'content': "글쓰기테스트 내용11",
+            'title': titleInputController.text,
+            'content': contentInputController.text,
             'dateCreated': DateTime.now()
           })
-          .then((value) => print("Post Added"))
+          .then((value) => Navigator.pop(context, true))
           .catchError((error) => print("Failed to add post: $error"));
     }
 
@@ -29,9 +31,19 @@ class WriteScreen extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(10),
             child: TextField(
+              controller: titleInputController,
+              maxLines: 1,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(), labelText: '제목'),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(10),
+            child: TextField(
+              controller: contentInputController,
               maxLines: 5,
               decoration: InputDecoration(
-                  border: OutlineInputBorder(), labelText: '여기에 입력하셈'),
+                  border: OutlineInputBorder(), labelText: '내용'),
             ),
           ),
           Container(
@@ -39,7 +51,7 @@ class WriteScreen extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: TextButton(
               style: TextButton.styleFrom(backgroundColor: Colors.white30),
-              onPressed: addUser,
+              onPressed: addPost,
               child: Text(
                 "작성 완료",
                 style: TextStyle(color: Colors.white),

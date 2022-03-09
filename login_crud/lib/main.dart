@@ -52,10 +52,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> titleAppbar = ['게시판','지도'];
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(title: Text('Login_CRUD')),
+        appBar: AppBar(title: Text('login_crud')),
         body: TabBarView(
           // physics: NeverScrollableScrollPhysics(), //  페이지 스크롤 여부
           children: <Widget>[
