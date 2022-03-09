@@ -45,9 +45,7 @@ class _BoardScreenState extends State<BoardScreen> {
                   //  MaterialPageRoute = 머티리얼 스타일로 페이지 이동
                   Navigator.of(context).push(MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (BuildContext context) {
-                        return WriteScreen();
-                      }));
+                      builder: (context) => WriteScreen()));
                 },
                 child: Icon(Icons.add_box, color: Colors.white),
                 backgroundColor: Colors.redAccent,
