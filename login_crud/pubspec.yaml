@@ -38,6 +38,9 @@ dependencies:
   firebase_core:
   cloud_firestore:
   google_maps_flutter:
+  geolocator: # 기기 위치 정보
+  sliding_up_panel:
+  cached_network_image: # 네트워크 이미지 캐시저장
 
 
   # The following adds the Cupertino Icons font to your application.

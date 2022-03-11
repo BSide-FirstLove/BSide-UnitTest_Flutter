@@ -58,7 +58,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> titleAppbar = ['게시판','지도'];
     return DefaultTabController(
       length: 2,
       child: Scaffold(
