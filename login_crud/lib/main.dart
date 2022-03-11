@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:login_crud/model/state.dart';
 import 'package:login_crud/screen/board_screen.dart';
@@ -15,6 +17,10 @@ void main() async {
   //  Firebase init
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  //  Google Map
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+  }
   runApp(
       ChangeNotifierProvider(
         create: (context) => UserState(),
@@ -58,7 +64,7 @@ class HomeScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(title: Text('login_crud')),
         body: TabBarView(
-          // physics: NeverScrollableScrollPhysics(), //  페이지 스크롤 여부
+          physics: NeverScrollableScrollPhysics(), //  페이지 스크롤 여부
           children: <Widget>[
             BoardScreen(),
             MapScreen(),
