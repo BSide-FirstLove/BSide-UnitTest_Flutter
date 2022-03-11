@@ -2,10 +2,15 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:login_crud/util/my_location.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:google_api_headers/google_api_headers.dart';
+import 'package:uuid/uuid.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -49,25 +54,42 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SlidingUpPanel(
-      color: Colors.black87,
-      parallaxEnabled: true,
-      backdropEnabled: true,  //  onPanel - body 흐리게
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(24.0),
-        topRight: Radius.circular(24.0),
-      ),
-      body: GoogleMap(
-        myLocationEnabled: _isLocation,
-        mapType: MapType.normal,
-        markers: _markers.values.toSet(),
-        onTap: (location) => _mapOnTab(location),
-        initialCameraPosition: _defaultPosition,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
-      panelBuilder: (sc) => _panel(sc),
+    return Stack(
+      children: [
+        SlidingUpPanel(
+          maxHeight: MediaQuery.of(context).size.height * .65,
+          color: Color(0xFF262626),
+          parallaxEnabled: true,
+          backdropEnabled: true,  //  onPanel - body 흐리게
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24.0),
+            topRight: Radius.circular(24.0),
+          ),
+          body: GoogleMap(
+            myLocationEnabled: _isLocation,
+            mapType: MapType.normal,
+            markers: _markers.values.toSet(),
+            onTap: (location) => _mapOnTab(location),
+            initialCameraPosition: _defaultPosition,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+          ),
+          panelBuilder: (sc) => _panel(sc),
+        ),
+        Positioned(
+          left: 20.0,
+          top: 20.0,
+          child: FloatingActionButton(
+            child: Icon(
+              Icons.search,
+              color: Theme.of(context).primaryColor,
+            ),
+            onPressed: () => Navigator.of(context).pushNamed('/search'),
+            backgroundColor: Colors.white70,
+          ),
+        ),
+      ],
     );
   }
 
@@ -83,10 +105,8 @@ class _MapScreenState extends State<MapScreen> {
         ),
       );
       _markers["test"] = marker;
-      setState(() {
-        _text1 = "Lat : " + _markers["test"]!.position.latitude.toString();
-        _text2 = "Lnt : " + _markers["test"]!.infoWindow.snippet!;
-      });
+      _text1 = "Lat : " + _markers["test"]!.position.latitude.toString();
+      _text2 = "Lnt : " + _markers["test"]!.infoWindow.snippet!;
     });
   }
 
@@ -197,7 +217,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
             SizedBox(
-              height: 24,
+              height: 24.0,
             ),
           ],
         ));
@@ -227,4 +247,78 @@ class _MapScreenState extends State<MapScreen> {
       ],
     );
   }
+}
+
+class CustomSearchScaffold extends PlacesAutocompleteWidget {
+  CustomSearchScaffold({Key? key})
+      : super(
+    key: key,
+    apiKey: dotenv.get('GOOGLE_APP_KEY'),
+    sessionToken: const Uuid().v4(),
+    language: 'ko',
+  );
+
+  @override
+  _CustomSearchScaffoldState createState() => _CustomSearchScaffoldState();
+}
+
+class _CustomSearchScaffoldState extends PlacesAutocompleteState {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: AppBarPlacesAutoCompleteTextField(
+          textStyle: null,
+          textDecoration: null, cursorColor: null,
+        ),
+      ),
+      body: PlacesAutocompleteResult(
+        onTap: (p) => displayPrediction(p, context),
+        logo: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [FlutterLogo()],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onResponseError(PlacesAutocompleteResponse response) {
+    super.onResponseError(response);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(response.errorMessage ?? 'Unknown error')),
+    );
+  }
+
+  @override
+  void onResponse(PlacesAutocompleteResponse response) {
+    super.onResponse(response);
+
+    if (response.predictions.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Got answer')),
+      );
+    }
+  }
+}
+
+Future<void> displayPrediction(
+    Prediction? p, BuildContext context) async {
+  if (p == null) {
+    return;
+  }
+
+  // get detail (lat/lng)
+  final _places = GoogleMapsPlaces(
+    apiKey: dotenv.get('GOOGLE_APP_KEY'),
+    apiHeaders: await const GoogleApiHeaders().getHeaders(),
+  );
+
+  final detail = await _places.getDetailsByPlaceId(p.placeId!);
+  final geometry = detail.result.geometry!;
+  final lat = geometry.location.lat;
+  final lng = geometry.location.lng;
+  print('${p.description} - $lat/$lng');
+  Navigator.pop(context, true);
 }

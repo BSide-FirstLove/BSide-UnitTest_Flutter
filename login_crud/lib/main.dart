@@ -46,9 +46,13 @@ class _MyappState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
-        primaryColor: Colors.black,
+        primaryColor: Colors.black87,
       ),
-      home: const LoginScreen(),
+      initialRoute: "/",
+      routes: {
+        '/':(_) => const LoginScreen(),
+        '/search': (_) => CustomSearchScaffold(),
+      },
     );
   }
 }

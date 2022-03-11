@@ -41,6 +41,7 @@ dependencies:
   geolocator: # 기기 위치 정보
   sliding_up_panel:
   cached_network_image: # 네트워크 이미지 캐시저장
+  flutter_google_places_hoc081098:
 
 
   # The following adds the Cupertino Icons font to your application.
