@@ -24,8 +24,12 @@ class _MapScreenState extends State<MapScreen> {
   final Map<String, Marker> _markers = {};
   bool _isLocation = false;
 
-  String _text1 = "";
-  String _text2 = "";
+  String _name = "";
+  String _lat = "";
+  String _lng = "";
+  String _address = "";
+  String _imgUrl1 = "";
+  String _imgUrl2 = "";
 
   CameraPosition _defaultPosition = const CameraPosition(
     target: LatLng(37.49565610362972, 127.03884620670416),
@@ -35,10 +39,10 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    getPosition();
+    _getPosition();
   }
 
-  getPosition() async {
+  _getPosition() async {
     Position position = await determinePosition();
     _defaultPosition = CameraPosition(
       target: LatLng(position.latitude, position.longitude),
@@ -50,6 +54,36 @@ class _MapScreenState extends State<MapScreen> {
     //  기기의 현 위치로 이동
     // final GoogleMapController controller = await _controller.future;
     // controller.animateCamera(CameraUpdate.newCameraPosition(_defaultPosition));
+  }
+
+  _getPlaceDetail(Prediction p) async {
+    final _places = GoogleMapsPlaces(
+        apiKey: dotenv.get('GOOGLE_APP_KEY'),
+        apiHeaders: await const GoogleApiHeaders().getHeaders(),
+    );
+
+    final detail = await _places.getDetailsByPlaceId(p.placeId!, language: "ko");
+    final geometry = detail.result.geometry!;
+    print(
+      "${detail.result.name} \n ${detail.result.formattedAddress}"
+    );
+    setState(() {
+      _name = detail.result.name;
+      _lat = geometry.location.lat.toString();
+      _lng = geometry.location.lng.toString();
+      _address = detail.result.formattedAddress.toString();
+      if(detail.result.photos.isNotEmpty) {
+        _imgUrl1 = _places.buildPhotoUrl(photoReference: detail.result.photos.first.photoReference, maxHeight: 120, maxWidth: 150);
+        if(detail.result.photos.length > 1){
+          _imgUrl2 = _places.buildPhotoUrl(photoReference: detail.result.photos[1].photoReference, maxHeight: 120, maxWidth: 150);
+        } else {
+          _imgUrl2 = "";
+        }
+      } else{
+        _imgUrl2 = "";
+        _imgUrl1 = "";
+      }
+    });
   }
 
   @override
@@ -85,12 +119,22 @@ class _MapScreenState extends State<MapScreen> {
               Icons.search,
               color: Theme.of(context).primaryColor,
             ),
-            onPressed: () => Navigator.of(context).pushNamed('/search'),
+            onPressed: () => _navigateAndDisplaySelection(context),
             backgroundColor: Colors.white70,
           ),
         ),
       ],
     );
+  }
+
+  _navigateAndDisplaySelection(BuildContext context) async {
+    // Navigator.push는 Future를 반환합니다. Future는 선택 창에서
+    // Navigator.pop이 호출된 이후 완료될 것입니다.
+    final result = await Navigator.of(context
+    ).pushNamed('/search');
+
+    Prediction p = result as Prediction;
+    _getPlaceDetail(p);
   }
 
   _mapOnTab(LatLng latLng) {
@@ -105,8 +149,8 @@ class _MapScreenState extends State<MapScreen> {
         ),
       );
       _markers["test"] = marker;
-      _text1 = "Lat : " + _markers["test"]!.position.latitude.toString();
-      _text2 = "Lnt : " + _markers["test"]!.infoWindow.snippet!;
+      _lat = "Lat : " + _markers["test"]!.position.latitude.toString();
+      _lng = "Lnt : " + _markers["test"]!.infoWindow.snippet!;
     });
   }
 
@@ -139,7 +183,7 @@ class _MapScreenState extends State<MapScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "클릭된 마커정보",
+                  _name,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24.0,
@@ -177,16 +221,20 @@ class _MapScreenState extends State<MapScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+                      _imgUrl1 == "" ? SizedBox()
+                          :
                       CachedNetworkImage(
                         imageUrl:
-                        "https://images.fineartamerica.com/images-medium-large-5/new-pittsburgh-emmanuel-panagiotakis.jpg",
+                        _imgUrl1,
                         height: 120.0,
                         width: (MediaQuery.of(context).size.width - 48) / 2 - 2,
                         fit: BoxFit.cover,
                       ),
+                      _imgUrl2 == "" ? SizedBox()
+                          :
                       CachedNetworkImage(
                         imageUrl:
-                        "https://cdn.pixabay.com/photo/2016/08/11/23/48/pnc-park-1587285_1280.jpg",
+                        _imgUrl2,
                         width: (MediaQuery.of(context).size.width - 48) / 2 - 2,
                         height: 120.0,
                         fit: BoxFit.cover,
@@ -211,7 +259,7 @@ class _MapScreenState extends State<MapScreen> {
                   SizedBox(
                     height: 12.0,
                   ),
-                  Text(_text1 + "\n" + _text2,
+                  Text(_lat + "\n" + _lng + "\n" + _address,
                   ),
                 ],
               ),
@@ -262,6 +310,28 @@ class CustomSearchScaffold extends PlacesAutocompleteWidget {
   _CustomSearchScaffoldState createState() => _CustomSearchScaffoldState();
 }
 
+Future<void> displayPrediction(
+    Prediction? p, BuildContext context) async {
+  if (p == null) {
+    return;
+  }
+
+  // get detail (lat/lng)
+  // final _places = GoogleMapsPlaces(
+  //   apiKey: dotenv.get('GOOGLE_APP_KEY'),
+  //   apiHeaders: await const GoogleApiHeaders().getHeaders(),
+  // );
+
+  // final detail = await _places.getDetailsByPlaceId(p.placeId!);
+  // final geometry = detail.result.geometry!;
+  // setState(() {
+    // _lat = geometry.location.lat.toString();
+    // _lng = geometry.location.lng.toString();
+    // _address = p.description.toString();
+  // });
+  Navigator.pop(context, p);
+}
+
 class _CustomSearchScaffoldState extends PlacesAutocompleteState {
   @override
   Widget build(BuildContext context) {
@@ -301,24 +371,4 @@ class _CustomSearchScaffoldState extends PlacesAutocompleteState {
       );
     }
   }
-}
-
-Future<void> displayPrediction(
-    Prediction? p, BuildContext context) async {
-  if (p == null) {
-    return;
-  }
-
-  // get detail (lat/lng)
-  final _places = GoogleMapsPlaces(
-    apiKey: dotenv.get('GOOGLE_APP_KEY'),
-    apiHeaders: await const GoogleApiHeaders().getHeaders(),
-  );
-
-  final detail = await _places.getDetailsByPlaceId(p.placeId!);
-  final geometry = detail.result.geometry!;
-  final lat = geometry.location.lat;
-  final lng = geometry.location.lng;
-  print('${p.description} - $lat/$lng');
-  Navigator.pop(context, true);
 }
