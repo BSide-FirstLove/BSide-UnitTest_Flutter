@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:login_crud/model/state.dart';
 import 'package:login_crud/screen/board_screen.dart';
@@ -15,6 +17,10 @@ void main() async {
   //  Firebase init
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  //  Google Map
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+  }
   runApp(
       ChangeNotifierProvider(
         create: (context) => UserState(),
@@ -40,9 +46,13 @@ class _MyappState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
-        primaryColor: Colors.black,
+        primaryColor: Colors.black87,
       ),
-      home: const LoginScreen(),
+      initialRoute: "/",
+      routes: {
+        '/':(_) => const LoginScreen(),
+        '/search': (_) => CustomSearchScaffold(),
+      },
     );
   }
 }
@@ -52,13 +62,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> titleAppbar = ['게시판','지도'];
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(title: Text('login_crud')),
         body: TabBarView(
-          // physics: NeverScrollableScrollPhysics(), //  페이지 스크롤 여부
+          physics: NeverScrollableScrollPhysics(), //  페이지 스크롤 여부
           children: <Widget>[
             BoardScreen(),
             MapScreen(),

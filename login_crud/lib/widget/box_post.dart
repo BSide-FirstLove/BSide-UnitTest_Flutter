@@ -38,7 +38,7 @@ List<Widget> _makeBoardItem(BuildContext context, List<Post> posts) {
                 backgroundImage: Image.network(posts[i].user.image).image,
               ),
               Container(
-                width: 265,
+                width: 260,
                 padding: EdgeInsets.only(left: 15),
                 child: Text(posts[i].title)
               ),
